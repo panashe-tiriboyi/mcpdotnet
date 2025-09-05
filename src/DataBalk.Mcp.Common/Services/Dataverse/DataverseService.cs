@@ -20,7 +20,7 @@ namespace DataBalk.Mcp.Common.Services.CRM
         private readonly string? crmScope;
         private readonly string? crmBaseUrl;
         private readonly string? crmAppId;
-        private readonly string? tenantId;
+        private readonly string? TENANT_ID;
 
 
         public DataverseService(
@@ -41,7 +41,7 @@ namespace DataBalk.Mcp.Common.Services.CRM
             crmScope = _configuration["CRM_SCOPE"];
             crmBaseUrl = _configuration["CRM_BASE_URL"];
             crmAppId = _configuration["CRM_KlantDeskAppId"];
-            tenantId = _configuration["TenantId"];
+            TENANT_ID = _configuration["TENANT_ID"];
             _serviceProvider = serviceProvider;
         }
 

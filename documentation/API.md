@@ -56,11 +56,11 @@ Base path: `/api/edms`
 
 #### Handle Webhook
 ```http
-POST /api/edms/webhook/{tenantId}
+POST /api/edms/webhook/{TENANT_ID}
 ```
 **Authorization**: Not Required (Anonymous)  
 **Parameters**:
-- `tenantId` (path, required): The tenant ID
+- `TENANT_ID` (path, required): The tenant ID
 - `validationtoken` (query, optional): Validation token for webhook setup
 - Request body: Webhook payload
 

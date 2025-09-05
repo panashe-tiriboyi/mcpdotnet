@@ -102,7 +102,7 @@ namespace DataBalk.Mcp.Common.Services.HttpConnector
                         );
                     break;
                 case ConnectionEnum.Dataverse:
-                    // await getAuthToken(crmClientId, crmClientSecret, crmScope, tenantId)
+                    // await getAuthToken(crmClientId, crmClientSecret, crmScope, TENANT_ID)
                     break;
                 case ConnectionEnum.OpenAI:
                     break;

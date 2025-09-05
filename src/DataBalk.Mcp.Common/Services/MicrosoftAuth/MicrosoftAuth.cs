@@ -6,7 +6,7 @@ namespace DataBalk.Mcp.Common.Services.MicrosoftAuth
     public class MicrosoftAuth : IMicrosoftAuth
     {
         private readonly IConfiguration _configuration;
-        private readonly string tenantId;
+        private readonly string TENANT_ID;
         private readonly string graphClientId;
         private readonly string graphClientSecret;
         private readonly string graphScope;
@@ -23,7 +23,7 @@ namespace DataBalk.Mcp.Common.Services.MicrosoftAuth
             crmClientId = _configuration["CRM_CLIENT_ID"];
             crmClientSecret = _configuration["CRM_CLIENT_SECRET"];
             crmScope = _configuration["CRM_SCOPE"];
-            tenantId = _configuration["TenantId"];
+            TENANT_ID = _configuration["TENANT_ID"];
         }
 
         public async Task<string> GetAccessToken(
@@ -35,11 +35,11 @@ namespace DataBalk.Mcp.Common.Services.MicrosoftAuth
             {
                 case ConnectionEnum.Graph:
                     return (
-                        await getAuthToken(graphClientId, graphClientSecret, graphScope, tenantId)
+                        await getAuthToken(graphClientId, graphClientSecret, graphScope, TENANT_ID)
                     ).AccessToken;
                 case ConnectionEnum.Dataverse:
                     return (
-                        await getAuthToken(crmClientId, crmClientSecret, crmScope, tenantId)
+                        await getAuthToken(crmClientId, crmClientSecret, crmScope, TENANT_ID)
                     ).AccessToken;
                 // case ConnectionEnum.OpenAI:
                 // return await getAuthToken();
@@ -52,14 +52,14 @@ namespace DataBalk.Mcp.Common.Services.MicrosoftAuth
             string clientID,
             string secret,
             string scope,
-            string tenantId
+            string TENANT_ID
         )
         {
             var app = ConfidentialClientApplicationBuilder
                 .Create(clientID)
                 .WithClientSecret(secret)
                 .WithAuthority(
-                    new Uri($"https://login.microsoftonline.com/{tenantId}/oauth2/v2.0/token")
+                    new Uri($"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token")
                 )
                 .Build();
             return await app.AcquireTokenForClient(new[] { scope }).ExecuteAsync();
