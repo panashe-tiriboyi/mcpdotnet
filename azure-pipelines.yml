@@ -1,0 +1,107 @@
+trigger:
+  branches:
+    include:
+      - main  # Change to your desired branch
+      - dev
+
+  tags:
+    include:
+      - '*'
+
+pool:
+  vmImage: 'windows-latest'  # Use 'ubuntu-latest' for Linux
+
+variables:
+  buildConfiguration: 'Release'
+  dotnetVersion: '8.0.x'  # Change to your required .NET version
+
+steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET SDK'
+    inputs:
+      packageType: 'sdk'
+      version: $(dotnetVersion)
+
+  - task: NuGetCommand@2
+    displayName: 'Restore Dependencies'
+    inputs:
+      command: 'restore'
+      restoreSolution: '**/src/*.sln'
+
+  - task: VSBuild@1
+    displayName: 'Build Application'
+    inputs:
+      solution: 'src/DataBalk.Iris.DMS.sln'
+      msbuildArgs: '/p:Configuration=$(buildConfiguration)'
+      platform: 'Any CPU'
+      configuration: '$(buildConfiguration)'
+
+  - task: VSTest@2
+    displayName: 'Run Unit Tests'
+    inputs:
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: '**/src/**/*Tests.dll'
+      searchFolder: '$(System.DefaultWorkingDirectory)/src'
+      configuration: '$(buildConfiguration)'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Application'
+    inputs:
+      command: 'publish'
+      projects: '/src/DataBalk.Iris.FileStorage/DataBalk.Iris.FileStorage.Api.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Api /p:DeployOnBuild=false /p:WebPublishMethod=FileSystem /p:PackageAsSingleFile=false'
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Document Migration WorkerService artifacts to pipeline"
+    inputs:
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)/Api"
+      artifactName: "DataBalk.Iris.FileStorage.Api"
+      publishLocation: "Container"
+
+  -  task: DotNetCoreCLI@2
+     displayName: "Create Document Migration WorkerService artifacts"
+     inputs:
+      command: publish
+      publishWebProjects: False
+      projects: "src/DataBalk.Iris.WorkerService.FileReader/DataBalk.Iris.WorkerService.FileReader.csproj"
+      arguments: "--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/DocumentMigrationWorker/App_Data/jobs/continuous/webjob"
+      zipAfterPublish: False
+      
+  - task: ArchiveFiles@2
+    displayName: "Archive Document Migration WorkerService artifacts"
+    inputs:
+      rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/DocumentMigrationWorker"
+      includeRootFolder: false
+      archiveType: "zip"
+      archiveFile: "$(Build.ArtifactStagingDirectory)/DocumentMigrationWorker/WorkerServiceDocumentMigrationWorker.zip"
+      replaceExistingArchive: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Document Migration WorkerService artifacts to pipeline"
+    inputs:
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)/DocumentMigrationWorker/WorkerServiceDocumentMigrationWorker.zip"
+      artifactName: "DataBalk.Iris.DocumentMigrationWorker"
+
+  -  task: DotNetCoreCLI@2
+     displayName: "Create Document Worker Service AzureAI artifacts"
+     inputs:
+      command: publish
+      publishWebProjects: False
+      projects: "src/DataBalk.Iris.WorkerService.AzureAI/DataBalk.Iris.WorkerService.AzureAI.csproj"
+      arguments: "--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/WorkerServiceAzureAI/App_Data/jobs/continuous/webjob"
+      zipAfterPublish: False
+      
+  - task: ArchiveFiles@2
+    displayName: "Archive Document Worker Service AzureAI artifacts"
+    inputs:
+      rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/WorkerServiceAzureAI"
+      includeRootFolder: false
+      archiveType: "zip"
+      archiveFile: "$(Build.ArtifactStagingDirectory)/WorkerServiceAzureAI/WorkerServiceAzureAI.zip"
+      replaceExistingArchive: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Document Worker Service AzureAI artifacts to pipeline"
+    inputs:
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)/WorkerServiceAzureAI/WorkerServiceAzureAI.zip"
+      artifactName: "DataBalk.Iris.WorkerServiceAzureAI"
