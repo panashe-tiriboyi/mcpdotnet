@@ -27,7 +27,7 @@ namespace DataBalk.Mcp.Server.Copilot.Controllers
         {
             _configuration = configuration;
             _httpConnector = httpConnector;
-            _dataverseUrl = _configuration["CRM:BaseUrl"];
+            _dataverseUrl = _configuration["CRM_BASE_URL"];
 
         }
 

@@ -20,9 +20,9 @@ namespace DataBalk.Mcp.Common.Services.MicrosoftAuth
             graphClientId = _configuration["GRAPH:ClientId"];
             graphClientSecret = _configuration["GRAPH:ClientSecret"];
             graphScope = _configuration["GRAPH:Scope"];
-            crmClientId = _configuration["CRM:ClientId"];
-            crmClientSecret = _configuration["CRM:ClientSecret"];
-            crmScope = _configuration["CRM:Scope"];
+            crmClientId = _configuration["CRM_CLIENT_ID"];
+            crmClientSecret = _configuration["CRM_CLIENT_SECRET"];
+            crmScope = _configuration["CRM_SCOPE"];
             tenantId = _configuration["TenantId"];
         }
 

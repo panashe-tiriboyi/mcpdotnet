@@ -36,11 +36,11 @@ namespace DataBalk.Mcp.Common.Services.CRM
             _httpRequestConnector = httpRequestConnector;
             _configuration = configuration;
             _microsoftAuth = microsoftAuth;
-            crmClientId = _configuration["CRM:ClientId"];
-            crmClientSecret = _configuration["CRM:ClientSecret"];
-            crmScope = _configuration["CRM:Scope"];
-            crmBaseUrl = _configuration["CRM:BaseUrl"];
-            crmAppId = _configuration["CRM:KlantDeskAppId"];
+            crmClientId = _configuration["CRM_CLIENT_ID"];
+            crmClientSecret = _configuration["CRM_CLIENT_SECRET"];
+            crmScope = _configuration["CRM_SCOPE"];
+            crmBaseUrl = _configuration["CRM_BASE_URL"];
+            crmAppId = _configuration["CRM_KlantDeskAppId"];
             tenantId = _configuration["TenantId"];
             _serviceProvider = serviceProvider;
         }
